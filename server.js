@@ -7,17 +7,13 @@ require('dotenv').config();
 
 const app = express();
 
-
 connectDB();
-
-
-
 
 const allowedDomains = ['http://localhost:3000'];
 
 app.use(
   cors({
-    origin(origin, callback) {
+    origin: function (origin, callback) {
       if (!origin || allowedDomains.includes(origin)) {
         callback(null, true);
       } else {
@@ -25,27 +21,16 @@ app.use(
         callback(new Error('Not allowed by CORS'));
       }
     },
-    credentials: true, 
+    credentials: true,
   })
 );
 
-
-app.options('*', cors({
-  origin: allowedDomains,
-  credentials: true,
-}));
-
-
-
 app.use(express.json());
-
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/blogs', require('./routes/blogRoutes'));
-
 
 app.use((err, req, res, next) => {
   if (err instanceof ValidationError) {
@@ -60,7 +45,6 @@ app.use((err, req, res, next) => {
     err: err,
   });
 });
-
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Running on port ${PORT}`));
