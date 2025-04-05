@@ -9,9 +9,18 @@ const app = express();
 
 connectDB();
 
+const allowedOrigins = ['http://localhost:3000'];
+
 app.use(
   cors({
-    origin: '*',
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
@@ -29,8 +38,8 @@ app.use((req, res, next) => {
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/blogs", require("./routes/blogRoutes"));
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/blogs', require('./routes/blogRoutes'));
 
 app.use((err, req, res, next) => {
   if (err instanceof ValidationError) {
