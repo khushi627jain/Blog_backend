@@ -10,16 +10,35 @@ const app = express();
 
 connectDB();
 
-const corsOptions = {
-  origin: 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-};
 
 
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); 
+
+app.options('*', cors());
+
+const allowedDomains = [
+
+  'http://localhost:3000',
+ 
+  
+];
+
+// Configure CORS to allow requests from specific domains
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || origin === 'null' || allowedDomains.includes(origin)) {
+        callback(null, true);
+      } else {
+        ErrorLog.insertError({
+          error: new Error('Not allowed by CORS'),
+          type: ErrorLog.TYPE.CORS,
+          metadata: `CORS error: ${origin}`,
+        });
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+  })
+);
 
 
 app.use(express.json());
