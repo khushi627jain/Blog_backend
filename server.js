@@ -9,7 +9,15 @@ const app = express();
 
 connectDB();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+
+app.options('*', cors());
 
 app.use((req, res, next) => {
   if (req.is('application/json')) {
@@ -21,8 +29,8 @@ app.use((req, res, next) => {
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use('/auth', require('./routes/authRoutes'));
-app.use('/blogs', require('./routes/blogRoutes'));
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/blogs", require("./routes/blogRoutes"));
 
 app.use((err, req, res, next) => {
   if (err instanceof ValidationError) {
