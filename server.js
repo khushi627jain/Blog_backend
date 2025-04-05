@@ -11,19 +11,10 @@ connectDB();
 
 const allowedDomains = ['http://localhost:3000'];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedDomains.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.warn('Blocked by CORS:', origin);
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: true,
+  credentials: true,
+}));
 
 app.use(express.json());
 
