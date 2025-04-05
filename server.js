@@ -18,15 +18,22 @@ const allowedDomains = ['http://localhost:3000'];
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || origin === 'null' || allowedDomains.includes(origin)) {
+      if (!origin || allowedDomains.includes(origin)) {
         callback(null, true);
       } else {
-        console.warn('Blocked by CORS:', origin); // Log to console instead
+        console.warn('Blocked by CORS:', origin);
         callback(new Error('Not allowed by CORS'));
       }
     },
+    credentials: true, 
   })
 );
+
+
+app.options('*', cors({
+  origin: allowedDomains,
+  credentials: true,
+}));
 
 
 
