@@ -9,29 +9,17 @@ const app = express();
 
 connectDB();
 const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = ['http://localhost:3000'];
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
+
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
-app.use((req, res, next) => {
-  if (req.is('application/json')) {
-    express.json()(req, res, next);
-  } else {
-    next();
-  }
-});
+app.use(express.json());
+
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
